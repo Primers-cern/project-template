@@ -1,238 +1,204 @@
 <template>
-  <div class="img-upload-wrapper wrap-flex">
-    <div v-for="(item, index) in list" :key="index" class="file-item-wrapper">
-      <el-image style="width: 100%; height: 100%" :src="item" fit="cover"></el-image>
-      <div class="item-del-btn" @click="handleRemove(index)">
-        <i class="el-icon-delete"></i>
+  <div class="center-flex">
+    <div
+      v-for="(item, index) in fileList"
+      class="upload-show-item group"
+      :key="index"
+      :style="`width: ${size[0]}px; height: ${size[1]}px;`"
+    >
+      <el-image class="w-full h-full" :src="item.url" fit="cover"></el-image>
+      <div class="upload-show-panel">
+        <i class="el-icon-zoom-in cursor-pointer" @click="viewer.push(item.url)"></i>
+        <el-popconfirm title="确认删除该项？" @confirm="handleRemove(item)">
+          <template #reference>
+            <i class="el-icon-delete cursor-pointer ml-3"></i>
+          </template>
+        </el-popconfirm>
       </div>
     </div>
+
     <el-upload
-      v-if="preview && list.length < limit"
+      v-show="!upToLimit"
+      ref="elUploader"
+      class="img-uploader inline-block"
       action="#"
+      :on-change="handleAdd"
+      :auto-upload="false"
       :show-file-list="false"
-      :http-request="catchImage"
     >
-      <div class="file-item-wrapper uploader center-flex column-flex justify-center">
-        <i class="el-icon-plus size-32 text-bold text-info" :class="tips && 'mt-2'"></i>
-        <p v-if="tips" class="text-center text-muted mt-1 size-12">{{tips}}</p>
+      <div class="upload-btn group" :style="`width: ${size[0]}px; height: ${size[1]}px;`">
+        <i class="el-icon-plus text-4xl text-gray-400 group-hover:text-theme"></i>
+        <span v-if="tips" class="mt-4 text-xs text-gray-300 group-hover:text-gray-500">{{ tips }}</span>
       </div>
     </el-upload>
-    <el-upload v-else action="#" :show-file-list="false" :http-request="catchImage">
-      <slot />
-    </el-upload>
-
-    <el-dialog
-      title="图像裁剪"
-      :visible.sync="showCropper"
-      width="400px"
-      append-to-body
-      center
-      :close-on-click-modal="false"
-      @open="setCropper"
-      @close="$refs.cropper.clear(); cropping = false"
-    >
-      <vue-cropper
-        ref="cropper"
-        :aspectRatio="this.ratio[0]/this.ratio[1]"
-        :zoomable="false"
-        :autoCropArea="1"
-      ></vue-cropper>
-      <span slot="footer" class="dialog-footer">
-        <el-button
-          size="small"
-          type="primary"
-          :loading="cropping"
-          @click="cropping = true;$refs.cropper.getCroppedCanvas(outputOption).toBlob(handleUpload)"
-        >{{cropping ? '正在' : '确认'}}裁剪</el-button>
-      </span>
-    </el-dialog>
   </div>
+
+  <teleport to="body">
+    <el-image-viewer
+      v-if="viewer.length"
+      :urlList="viewer"
+      hideOnClickModal
+      @close="viewer.length = 0"
+    />
+  </teleport>
+
+  <el-dialog v-model="showCropper" title="裁剪" width="500px" @close="cropping = false;">
+    <vue-picture-cropper
+      :img="fileSource.value"
+      :boxStyle="{
+        minHeight: '300px',
+        maxHeight: '50vh',
+        backgroundColor: '#f8f8f8',
+      }"
+      :options="{
+        viewMode: 1,
+        zoomable: false,
+        dragMode: 'crop',
+        autoCropArea: '1',
+        aspectRatio: props.ratio[0] / props.ratio[1]
+      }"
+    />
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="showCropper = false">取 消</el-button>
+        <el-button type="primary" :loading="cropping" @click="handleCrop">裁 剪</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
-<script>
-import Axios from "axios";
-import VueCropper from "vue-cropperjs";
-import "cropperjs/dist/cropper.css";
+<script setup>
+import { defineEmit, defineProps, reactive, ref, computed, inject } from "vue";
+import tools from "js/tools";
+import uploadTool from 'components/uploadTool.vue'
+import VuePictureCropper, { cropper } from "vue-picture-cropper/dist/esm";
 
-export default {
-  name: "imgUploader",
-  components: { VueCropper },
-  props: {
-    list: {
-      type: Array,
-      default: () => []
-    },
-    limit: {
-      type: Number,
-      default: 5
-    },
-    ratio: {
-      type: Array,
-      default: () => [500, 500]
-    },
-    tips: {
-      type: String,
-      default: "尺寸比例 1:1"
-    },
-    preview: {
-      type: Boolean,
-      default: true
-    }
+const emit = defineEmit()
+const props = defineProps({
+  list: {
+    type: Array,
+    default: () => []
   },
-
-  data() {
-    return {
-      showCropper: false,
-      cropping: false,
-      fileSource: {},
-      outputOption: {
-        width: this.ratio[0],
-        height: this.ratio[1]
-      },
-      ossOptions: {
-        empty: true
-      }
-    };
+  limit: {
+    type: Number,
+    default: 5
   },
-  mounted() {},
-  methods: {
-    // 获取到图片
-    catchImage({ file }) {
-      let self = this,
-        maxSize = 5 * 1024 * 1024;
-
-      if (file.size >= maxSize)
-        return self.$message.error("请上传 5m 内的图片");
-
-      self.fileSource = file;
-      self.showCropper = true;
-    },
-
-    setCropper() {
-      let self = this,
-        url = URL.createObjectURL(self.fileSource);
-
-      self.$nextTick(() => {
-        let cropper = self.$refs.cropper;
-        cropper.initCrop();
-        cropper.replace(url);
-      });
-    },
-
-    handleUpload(blob) {
-      let self = this;
-      self.getOssData().then(ossSign => {
-        let file = self.fileSource,
-          fileName = file.uid + "." + file.type.split("/")[1];
-
-        var ossData = new FormData();
-        ossData.append("name", file.name);
-        ossData.append("key", ossSign.upload_path + fileName);
-        ossData.append("policy", ossSign.policy);
-        ossData.append("OSSAccessKeyId", ossSign.key_id);
-        ossData.append("success_action_status", ossSign.success_status);
-        ossData.append("signature", ossSign.signature);
-        ossData.append("file", blob, file.name);
-
-        Axios.post(ossSign.bucket_domain, ossData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-          .then(res => {
-            if (res.status === 200) {
-              let imgUrl =
-                ossSign.bucket_domain + ossSign.upload_path + fileName;
-
-              if (self.preview)
-                self.$emit("update:list", [...self.list, imgUrl]);
-              self.$emit("uploaded", imgUrl);
-
-              self.$message.success("上传成功");
-              self.cropping = false;
-              self.showCropper = false;
-            }
-          })
-          .catch(error => {
-            console.log("error", error);
-          });
-      });
-    },
-
-    handleRemove(index) {
-      let self = this;
-      self
-        .$confirm("确认删除该图片", "提示", {})
-        .then(() => {
-          let emitArr = [...self.list];
-          emitArr.splice(index, 1);
-          self.$emit("update:list", emitArr);
-          self.$emit("remove", index);
-        })
-        .catch(() => {});
-    },
-
-    getOssData() {
-      return new Promise(resolve => {
-        let self = this;
-
-        if (!self.ossOptions.empty) return resolve(self.ossOptions);
-        let url = "getOSSConfig",
-          params = {
-            upload_type: "image"
-          };
-
-        self.$http.post(url, params).then(data => {
-          let res = data.data;
-
-          self.ossOptions = res;
-          resolve(res);
-        });
-      });
-    }
+  ratio: {
+    type: Array,
+    default: () => ([500, 500])
+  },
+  tips: {
+    type: String,
+    default: "尺寸比例 1:1"
+  },
+  size: {
+    type: Array,
+    default: () => ([120, 120])
   }
-};
+})
+
+const viewer = ref([])
+
+const elUploader = ref()
+const fileList = ref([...props.list])
+const upToLimit = computed(() => fileList.value.length >= props.limit)
+const handleAdd = (file, list) => {
+  elUploader.value.handleRemove(file)
+
+  let
+    maxSize = 5 * 1024 * 1024, // 5m
+    errorText = ''
+  if (file.size >= maxSize) errorText = "请上传 5m 内的图片"
+  if (!~file.raw.type.indexOf('image/')) errorText = "请添加图片格式"
+  if (errorText) return tools.message.warning(errorText)
+
+  const reader = new FileReader();
+  reader.readAsDataURL(file.raw);
+  reader.onload = () => {
+    fileSource.value = {
+      uid: file.uid,
+      value: reader.result
+    }
+    showCropper.value = true;
+  }
+}
+
+
+const showCropper = ref(false)
+const cropping = ref(false)
+const fileSource = ref({})
+const outputOption = reactive({
+  width: props.ratio[0],
+  height: props.ratio[1]
+})
+const handleCrop = () => {
+  const canvas = cropper.getCroppedCanvas(outputOption)
+  cropping.value = true
+  canvas.toBlob(blob => {
+    blob.uid = fileSource.value.uid
+    const item = {
+      file: blob,
+      url: cropper.getDataURL()
+    }
+
+    fileList.value.push(item)
+    showCropper.value = false
+    emit('add', item)
+  })
+}
+
+const handleRemove = file => {
+  fileList.value.splice(fileList.value.indexOf(file), 1)
+  emit('remove', file)
+}
+
+const handleUpload = async () => {
+  const uploadAction = uploadTool.setup().upload
+  fileList.value.map(async item => {
+    const result = await uploadAction(item)
+    return {
+      uploaded: true,
+      name: item.name,
+      url: result.filePath
+    }
+  });
+
+  const uploadedList = {
+    success: !fileList.value.some(item => !!item.file),
+    value: [...fileList.value]
+  }
+
+  emit("update:list", [...fileList.value]);
+  emit("uploaded", uploadedList);
+  return result
+}
+
 </script>
 
-<style scoped>
-.file-item-wrapper {
-  position: relative;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  height: 100px;
-  width: 100px;
-  margin: 0 20px 20px 0;
-  background-color: var(--banground-color);
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.2s;
+<style>
+.upload-show-item {
+  @apply rounded-md border border-gray-300 mr-3 overflow-hidden inline-block relative;
 }
 
-.item-del-btn {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: #00000066;
-  opacity: 0;
-  transition: all 0.3s;
+.upload-show-panel {
+  @apply group-hover:opacity-100 text-white text-2xl bg-gray-800 bg-opacity-50 opacity-0 transition-opacity center-flex justify-center absolute top-0 bottom-0 w-full;
 }
 
-.item-del-btn .el-icon-delete {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  font-size: 32px;
-  color: #fff;
-  transform: translate(-50%, -50%);
+.upload-btn {
+  @apply hover:(border-solid border-theme) bg-blue-gray-50 cursor-pointer rounded-md border border-dashed border-gray-300 center-flex flex-col justify-center transition-all;
+}
+/* 
+.img-uploader .el-upload-list--picture-card {
+  font-size: 0;
 }
 
-.file-item-wrapper:hover .item-del-btn {
-  opacity: 1;
+.img-uploader .el-upload--picture-card {
+  margin-bottom: 8px;
 }
 
-.uploader:hover {
-  border-color: var(--theme-color);
-}
+.img-uploader.over-limit .el-upload--picture-card {
+  opacity: 0.4;
+  border-color: #c0ccda;
+  cursor: not-allowed;
+} */
 </style>

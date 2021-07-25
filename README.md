@@ -1,7 +1,9 @@
 # project-template
 
-- vue2/vue router/vuex/vue cli
+- vue3 + vite
+- element plus
+- windicss
+- vue router/vuex
 - axios
-- element ui
 - cropperjs
 - tinymce editor

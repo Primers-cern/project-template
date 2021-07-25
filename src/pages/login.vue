@@ -1,125 +1,88 @@
 <template>
-  <div class="login-wrapper">
-    <el-card class="box-card">
-      <h1 class="title">
-        <el-image
-          style="width: 40px; height: 40px"
-          :src="require('../assets/img/logo.png')"
-          fit="cover"
-        ></el-image>
-        <span class="ml-2">五华惠企管理平台</span>
-      </h1>
-      <div class="input-group">
-        <el-input
-          class="mt-5"
-          v-model="user_account"
-          placeholder="请输入账号"
-          prefix-icon="el-icon-user"
-          @keyup.enter.native="handleLogin"
-        ></el-input>
-        <el-input
-          class="mt-3"
-          v-model="user_pwd"
-          placeholder="请输入密码"
-          prefix-icon="el-icon-key"
-          @keyup.enter.native="handleLogin"
-          show-password
-        ></el-input>
-        <el-button
-          class="w-100 mt-5"
-          type="primary"
-          :loading="loading"
-          @click="handleLogin"
-        >{{loading ? '正在登录' : '登录'}}</el-button>
+  <div class="h-screen w-screen bg-hero-circuit-board center-flex justify-center text-center">
+    <el-card class="w-100 mb-40 !bg-background !overflow-visible">
+      <div class="center-flex flex-col">
+        <div class="center-flex justify-center h-16">
+          <img class="w-8 h-8 mr-5" src="~img/logo.png" object-fit="cover" />
+          <h1 class="text-2xl font-bold">{{ projectName }}</h1>
+        </div>
+        <div class="text-small text-info mt-2 pb-16">全广西最具影响力的网红直播平台</div>
+        <div class="w-70">
+          <el-form :model="form" ref="formNode" :rules="formRules">
+            <el-form-item prop="user_account">
+              <el-input
+                v-model="form.user_account"
+                prefix-icon="el-icon-user"
+                placeholder="请输入登录账号"
+                @keypress.enter="handleLogin"
+              />
+            </el-form-item>
+            <el-form-item prop="user_pwd">
+              <el-input
+                v-model="form.user_pwd"
+                prefix-icon="el-icon-lock"
+                placeholder="请输入登录密码"
+                show-password
+                @keypress.enter="handleLogin"
+              />
+            </el-form-item>
+          </el-form>
+          <el-button
+            class="w-full !mt-10"
+            type="primary"
+            :loading="isLogin"
+            @click="handleLogin"
+            :disabled="forbidLogin"
+          >登 录</el-button>
+        </div>
+        <div class="text-xs text-muted relative top-16">{{ copyright }} | {{ icp }}</div>
       </div>
     </el-card>
   </div>
 </template>
 
-<script>
-export default {
-  name: "Login",
-  data() {
-    return {
-      user_account: "",
-      user_pwd: "",
-      loading: false
+<script setup>
+import { inject, ref, reactive, computed } from "vue";
+import { useRouter } from "vue-router";
+import tools from "js/tools";
+const updateToken = inject("updateToken");
+const router = useRouter();
+const { projectName, copyright, icp } = tools.CONSTANT;
+
+const form = reactive({
+  user_account: "",
+  user_pwd: "",
+});
+const formNode = ref();
+const formRules = {
+  user_account: [{ required: true, message: "账号必须填写" }],
+  user_pwd: [{ required: true, message: "密码必须填写" }],
+};
+
+const forbidLogin = computed(() => Object.values(form).some((val) => !val));
+const isLogin = ref(false);
+const handleLogin = async () => {
+  const result = await formNode.value.validate().catch(() => { });
+  if (typeof result !== "boolean") return;
+  isLogin.value = true;
+
+  const url = "Login/login",
+    params = {
+      login_type: "a002",
+      ...form,
     };
-  },
-  methods: {
-    handleLogin() {
-      let self = this,
-        url = "Index/Login/login",
-        params = {
-          login_type: "a002",
-          user_account: self.user_account,
-          user_pwd: self.user_pwd
-        };
 
-      self.loading = true;
-      self.$http
-        .post(url, params)
-        .then(res => {
-          let $store = self.$store,
-            data = res.data;
-
-          $store.commit("storeCookier", {
-            opr: "set",
-            name: self.$tools.CONSTANT.token_name,
-            value: data.session_id
-          });
-
-          $store.commit("storeCookier", {
-            opr: "set",
-            name: "user_id",
-            value: data.id
-          });
-
-          $store.commit("storeCookier", {
-            opr: "set",
-            name: "user_role",
-            value: data.user_role
-          });
-
-          self.loading = false;
-
-          $store.dispatch("getUserInfo", data.id).then(() => {
-            self.$message.success("登陆成功");
-            self.$store.commit("reset_tab");
-            self.$router.push({ name: "index" });
-          });
-        })
-        .catch(() => (self.loading = false));
-    }
-  }
+  tools.http
+    .post(url, params)
+    .finally(() => (isLogin.value = false))
+    .then((data) => {
+      const res = data.data;
+      tools.message.success("登录成功");
+      updateToken(res.session_id);
+      router.replace("home");
+    });
 };
 </script>
 
-<style scoped>
-.login-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-image: linear-gradient(to top right, #3c95df, var(--theme-color));
-}
-.box-card {
-  padding: 30px 20px;
-  width: 400px;
-}
-
-.title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: var(--theme-color);
-}
-
-.input-group {
-  width: 80%;
-  margin: 0 auto;
-}
+<style>
 </style>

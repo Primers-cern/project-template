@@ -1,16 +1,12 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
-  </div>
+  <router-view></router-view>
 </template>
 
-<script>
-export default {
-  name: "app",
-  created() {
-    this.$store.dispatch("getProjectInfo");
-  }
-};
+<script setup>
+import { provide } from 'vue'
+import store from "@/store"
+ 
+for (let key in store) provide(key, store[key])
 </script>
 
 <style>

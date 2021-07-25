@@ -1,26 +1,16 @@
-import Vue from 'vue'
-import App from '@/App.vue'
-
-import 'js/tools' // 引入公共方法库
-import 'js/http' // 异步请求封装
-import 'js/filter' // 引入filter
-import 'js/useComponents' // 引入公共组件
-import 'plugins/tinymce/useTinymce'
-import 'plugins/element/element.js'
-
-import store from '@/store'
+import { createApp } from 'vue'
+import App from './App.vue'
 import router from '@/router'
+import ElementPlus from 'element-plus';
+import locale from 'element-plus/lib/locale/lang/zh-cn'
+import publicComponents from 'js/publicCompnents'
 
-import '@css/reset.css'
-import '@css/public.css'
-import '@css/style.css'
+import 'css/reset.css'
+import 'element-plus/lib/theme-chalk/index.css';
+import 'virtual:windi.css'
 
-Vue.prototype.window = window
-
-Vue.config.productionTip = false
-
-new Vue({
-  render: h => h(App),
-  store,
-  router,
-}).$mount('#app')
+const app = createApp(App)
+app.use(router)
+app.use(ElementPlus, { locale })
+for (let key in publicComponents) app.component(key, publicComponents[key])
+app.mount('#app')

@@ -26,7 +26,7 @@ a:hover { text-decoration: underline; }
   --muted-color: #C0C4CC;
   --border-color: #EBEEF5;
   --dark-border-color: #DCDFE6;
-  --background-color: #F2F6FC;
+  --background-color: #f1f5f9;
 }
 
 :focus {
@@ -34,3 +34,9 @@ a:hover { text-decoration: underline; }
 }
 
 body {color: var(--text-color);background-color: var(--background-color);font-size: 14px;}
+
+
+/* 样式修复 */
+.el-popconfirm__main {
+  margin: 1em 0;
+}

@@ -55,7 +55,7 @@ const mutations = {
     let indexPage = indexRoutes[0]
     indexPage.children = routesList
 
-    if (NODE_ENV === 'development') indexPage.redirect = indexPage.path + '/resourceSupplyList'
+    if (NODE_ENV === 'development') indexPage.redirect = indexPage.path + '/home'
     // 测试服
     else if (NODE_ENV === 'production') indexPage.redirect = indexPage.path + '/' + routesList[0].path // 生产环境正式服
 

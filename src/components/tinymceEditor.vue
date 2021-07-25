@@ -105,7 +105,7 @@ export default {
         let self = this;
 
         if (!self.ossOptions.empty) return resolve(self.ossOptions);
-        let url = "Index/Image/getFrontOSSConfig",
+        let url = "getOSSConfig",
           params = {
             upload_type: "image"
           };

@@ -14,6 +14,10 @@ module.exports = {
       .set('js', resolve('src/assets/js'))
   },
 
+  presets: [
+    '@vue/cli-plugin-babel/preset'
+  ],
+
   productionSourceMap: false,
   publicPath: './'
 }

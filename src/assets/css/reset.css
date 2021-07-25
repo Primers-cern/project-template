@@ -1,0 +1,36 @@
+html, body, div, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ol, ul, li, fieldset, form, label, input, legend, table, caption, tbody, tfoot, thead, tr, th, td, textarea, article, aside, audio, canvas, figure, footer, header, mark, menu, nav, section, time, video { margin: 0; padding: 0; }
+h1, h2, h3, h4, h5, h6 { font-size: 100%; font-weight: normal }
+article, aside, dialog, figure, footer, header, hgroup, nav, section, blockquote { display: block; }
+ul, ol { list-style: none; }
+img { border: 0 none; vertical-align: top; }
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after, q:before, q:after { content: none; }
+table { border-collapse: collapse; border-spacing: 0; }
+ins { text-decoration: underline; }
+del { text-decoration: line-through; }
+mark { background: none; }
+input::-ms-clear { display: none !important; }
+body { font: 12px/1.5 \5FAE\8F6F\96C5\9ED1, \5B8B\4F53; background: #fff; font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;}
+a { text-decoration: none; color: #333; }
+a:hover { text-decoration: underline; }
+
+
+:root {
+  /* --theme-color: #409EFF; */
+  --theme-color: #2B73AF;
+  --success-color: #67C23A;
+  --warning-color: #E6A23C;
+  --danger-color: #F56C6C;
+  --text-color: #303133;
+  --info-color: #909399;
+  --muted-color: #C0C4CC;
+  --border-color: #EBEEF5;
+  --dark-border-color: #DCDFE6;
+  --background-color: #F2F6FC;
+}
+
+:focus {
+  outline: none;
+}
+
+body {color: var(--text-color);background-color: var(--background-color);font-size: 14px;}

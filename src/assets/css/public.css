@@ -1,0 +1,550 @@
+.bg-white {
+  background-color: #fff;
+}
+
+.bg-gray {
+  background-color: var(--background-color) !important;
+}
+
+/* text */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.text-priamry,
+.text-theme {
+  color: var(--theme-color);
+}
+
+.text-success {
+  color: var(--success-color);
+}
+
+.text-warning {
+  color: var(--warning-color);
+}
+
+.text-danger {
+  color: var(--danger-color);
+}
+
+.text-info {
+  color: var(--info-color);
+}
+
+.text-muted {
+  color: var(--muted-color);
+}
+
+.text-bold {
+  font-weight: bold;
+}
+.text-light {
+  font-weight: normal;
+}
+
+/* 限制行数显示省略号 */
+.text-one-line {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.text-tow-line {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.text-three-line {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.size-0 {
+  font-size: 0;
+  line-height: 0;
+}
+
+.size-10 {
+  font-size: 10px;
+}
+
+.size-12 {
+  font-size: 12px;
+}
+
+.size-14 {
+  font-size: 14px;
+}
+
+.size-16 {
+  font-size: 16px;
+}
+
+.size-18 {
+  font-size: 18px;
+}
+
+.size-20 {
+  font-size: 20px;
+}
+.size-24 {
+  font-size: 24px;
+}
+.size-28 {
+  font-size: 28px;
+}
+
+.size-32 {
+  font-size: 32px;
+}
+
+.size-40 {
+  font-size: 40px;
+}
+
+/* flex */
+.d-flex {
+  display: flex;
+}
+
+.center-flex {
+  display: flex;
+  align-items: center;
+}
+
+.start-flex {
+  display: flex;
+  align-items: flex-start;
+}
+
+.end-flex {
+  display: flex;
+  align-items: flex-end;
+}
+
+.column-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.wrap-flex,
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+.flex-1 {
+  flex: 1;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.d-block {
+  display: block;
+}
+
+.d-inline-block {
+  display: inline-block;
+}
+
+/* width */
+.w-100 {
+  width: 100%;
+}
+
+.w-75 {
+  width: 75%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-25 {
+  width: 25%;
+}
+
+.w-0 {
+  width: 0;
+}
+
+/* height */
+.h-0 {
+  height: 0;
+}
+
+.h-100 {
+  height: 100%;
+}
+.vh-100 {
+  height: 100vh;
+}
+
+/* margin padding */
+.m-0 {
+  margin: 0 !important;
+}
+
+.mt-0,
+.my-0 {
+  margin-top: 0 !important;
+}
+
+.mr-0,
+.mx-0 {
+  margin-right: 0 !important;
+}
+
+.mb-0,
+.my-0 {
+  margin-bottom: 0 !important;
+}
+
+.ml-0,
+.mx-0 {
+  margin-left: 0 !important;
+}
+
+.m-1 {
+  margin: 5px !important;
+}
+
+.mt-1,
+.my-1 {
+  margin-top: 5px !important;
+}
+
+.mr-1,
+.mx-1 {
+  margin-right: 5px !important;
+}
+
+.mb-1,
+.my-1 {
+  margin-bottom: 5px !important;
+}
+
+.ml-1,
+.mx-1 {
+  margin-left: 5px !important;
+}
+
+.m-2 {
+  margin: 10px !important;
+}
+
+.mt-2,
+.my-2 {
+  margin-top: 10px !important;
+}
+
+.mr-2,
+.mx-2 {
+  margin-right: 10px !important;
+}
+
+.mb-2,
+.my-2 {
+  margin-bottom: 10px !important;
+}
+
+.ml-2,
+.mx-2 {
+  margin-left: 10px !important;
+}
+
+.m-3 {
+  margin: 20px !important;
+}
+
+.mt-3,
+.my-3 {
+  margin-top: 20px !important;
+}
+
+.mr-3,
+.mx-3 {
+  margin-right: 20px !important;
+}
+
+.mb-3,
+.my-3 {
+  margin-bottom: 20px !important;
+}
+
+.ml-3,
+.mx-3 {
+  margin-left: 20px !important;
+}
+
+.m-4 {
+  margin: 30px !important;
+}
+
+.mt-4,
+.my-4 {
+  margin-top: 30px !important;
+}
+
+.mr-4,
+.mx-4 {
+  margin-right: 30px !important;
+}
+
+.mb-4,
+.my-4 {
+  margin-bottom: 30px !important;
+}
+
+.ml-4,
+.mx-4 {
+  margin-left: 30px !important;
+}
+
+.m-5 {
+  margin: 60px !important;
+}
+
+.mt-5,
+.my-5 {
+  margin-top: 60px !important;
+}
+
+.mr-5,
+.mx-5 {
+  margin-right: 60px !important;
+}
+
+.mb-5,
+.my-5 {
+  margin-bottom: 60px !important;
+}
+
+.ml-5,
+.mx-5 {
+  margin-left: 60px !important;
+}
+
+.p-0 {
+  padding: 0 !important;
+}
+
+.pt-0,
+.py-0 {
+  padding-top: 0 !important;
+}
+
+.pr-0,
+.px-0 {
+  padding-right: 0 !important;
+}
+
+.pb-0,
+.py-0 {
+  padding-bottom: 0 !important;
+}
+
+.pl-0,
+.px-0 {
+  padding-left: 0 !important;
+}
+
+.p-1 {
+  padding: 5px !important;
+}
+
+.pt-1,
+.py-1 {
+  padding-top: 5px !important;
+}
+
+.pr-1,
+.px-1 {
+  padding-right: 5px !important;
+}
+
+.pb-1,
+.py-1 {
+  padding-bottom: 5px !important;
+}
+
+.pl-1,
+.px-1 {
+  padding-left: 5px !important;
+}
+
+.p-2 {
+  padding: 10px !important;
+}
+
+.pt-2,
+.py-2 {
+  padding-top: 10px !important;
+}
+
+.pr-2,
+.px-2 {
+  padding-right: 10px !important;
+}
+
+.pb-2,
+.py-2 {
+  padding-bottom: 10px !important;
+}
+
+.pl-2,
+.px-2 {
+  padding-left: 10px !important;
+}
+
+.p-3 {
+  padding: 20px !important;
+}
+
+.pt-3,
+.py-3 {
+  padding-top: 20px !important;
+}
+
+.pr-3,
+.px-3 {
+  padding-right: 20px !important;
+}
+
+.pb-3,
+.py-3 {
+  padding-bottom: 20px !important;
+}
+
+.pl-3,
+.px-3 {
+  padding-left: 20px !important;
+}
+
+.p-4 {
+  padding: 30px !important;
+}
+
+.pt-4,
+.py-4 {
+  padding-top: 30px !important;
+}
+
+.pr-4,
+.px-4 {
+  padding-right: 30px !important;
+}
+
+.pb-4,
+.py-4 {
+  padding-bottom: 30px !important;
+}
+
+.pl-4,
+.px-4 {
+  padding-left: 30px !important;
+}
+
+.p-5 {
+  padding: 60px !important;
+}
+
+.pt-5,
+.py-5 {
+  padding-top: 60px !important;
+}
+
+.pr-5,
+.px-5 {
+  padding-right: 60px !important;
+}
+
+.pb-5,
+.py-5 {
+  padding-bottom: 60px !important;
+}
+
+.pl-5,
+.px-5 {
+  padding-left: 60px !important;
+}
+
+.m-auto {
+  margin: auto !important;
+}
+
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.my-auto {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.position-absolute {
+  position: absolute;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.border {
+  border: 1px solid var(--border-color);
+}
+
+.border-b {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.border-t {
+  border-top: 1px solid var(--border-color);
+}
+
+.border-radius {
+  border-radius: 3px;
+}
